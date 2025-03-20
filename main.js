@@ -1,4 +1,4 @@
-const API_KEY = `888ffa96`;
+const API_KEY="888ffa96";
 
 document.getElementById("searchBtn").addEventListener("click", async () => {
     const searchTerm = document.getElementById("searchInput").value;
@@ -8,7 +8,7 @@ document.getElementById("searchBtn").addEventListener("click", async () => {
     }
 
     try {
-        const response = await fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=${API_KEY}`,  { mode: "no-cors" });
+        const response = await fetch(`https://www.omdbapi.com/?s=${searchTerm}&apikey=${API_KEY}`);
         const data = await response.json();
 
         if (data.Response === "False") {
@@ -40,12 +40,24 @@ function displayMovies(movies) {
 
 async function fetchMovieDetails(imdbID) {
     try {
-        const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${API_KEY}`,{ mode: "no-cors" }); 
-        const data = await response.json();
+        const response = await fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${API_KEY}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+
+        const text = await response.text();  // Read raw response
+        console.log("Raw Response:", text);
+
+        // Ensure valid JSON
+        if (!text || text.trim().length === 0) {
+            throw new Error("Empty response from API");
+        }
+
+        const data = JSON.parse(text);  // Convert text to JSON
 
         if (data.Response === "False") {
-            alert("Movie details not found.");
-            return;
+            throw new Error(data.Error);
         }
 
         const movieDetails = document.getElementById("movieDetails");
@@ -58,8 +70,9 @@ async function fetchMovieDetails(imdbID) {
         `;
     } catch (error) {
         console.error("Fetch error:", error);
-        alert("Failed to fetch movie details.");
+        alert(`Failed to fetch movie details: ${error.message}`);
     }
 }
+
 
 
