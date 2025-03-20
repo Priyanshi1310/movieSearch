@@ -1,0 +1,4 @@
+body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+#movieList, #movieDetails { margin-top: 20px; }
+.movie-item { cursor: pointer; display: inline-block; margin: 10px; text-align: center; }
+.movie-item img { width: 150px; }
